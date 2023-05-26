@@ -1,0 +1,5 @@
+node_modules
+.idea
+chmod-400.cmd.txt
+ws-pokerplanning.pem
+api/dist
