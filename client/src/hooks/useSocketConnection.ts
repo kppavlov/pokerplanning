@@ -58,6 +58,10 @@ export const useSocketConnection = () => {
       }
     );
 
+    socket.on("connect_error", (err) => {
+      console.log(`connect_error due to ${err.message}`);
+    });
+
     return () => {
       if (socket) {
         socket.disconnect();
