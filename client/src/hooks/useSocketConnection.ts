@@ -9,10 +9,6 @@ interface UserProps {
   vote: number | null;
 }
 
-console.log("============================================================");
-console.log(import.meta.env.VITE_APP_HOST);
-console.log("============================================================");
-
 export const useSocketConnection = () => {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -32,7 +28,7 @@ export const useSocketConnection = () => {
 
     socket = io(import.meta.env.VITE_APP_HOST, {
       reconnectionDelayMax: 10000,
-      rejectUnauthorized: false,
+      path: "/",
       query: {
         room: roomId,
         name,
