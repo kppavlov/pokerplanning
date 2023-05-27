@@ -9,8 +9,7 @@ const { Server } = require("socket.io");
 
 const io = new Server(server, {
   cors: {
-    // origin: ["http://localhost:5173", "https://poker.threesixtybg.com"],
-    origin: "*",
+    origin: ["http://localhost:5173", "https://poker.threesixtybg.com"],
     methods: ["GET", "POST"],
   },
 });
