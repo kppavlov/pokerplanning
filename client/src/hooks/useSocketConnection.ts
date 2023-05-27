@@ -32,6 +32,7 @@ export const useSocketConnection = () => {
 
     socket = io(import.meta.env.VITE_APP_HOST, {
       reconnectionDelayMax: 10000,
+      rejectUnauthorized: false,
       query: {
         room: roomId,
         name,
