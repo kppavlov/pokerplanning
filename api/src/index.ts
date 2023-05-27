@@ -18,6 +18,7 @@ const io = new Server(server, {
 const roomUsersMap: RoomsType = new Map();
 
 io.on("connection", async (socket) => {
+  console.log("someone connected");
   const roomName = socket.handshake.query.room as string;
   const userName = socket.handshake.query.name as string;
 
