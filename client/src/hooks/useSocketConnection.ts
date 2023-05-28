@@ -16,7 +16,7 @@ export const useSocketConnection = () => {
 
   useEffect(() => {
     const name = JSON.parse(
-      sessionStorage.getItem("persistedUser") ?? ""
+      sessionStorage.getItem("persistedUser") ?? "{}"
     )?.name;
 
     if (!name) {
