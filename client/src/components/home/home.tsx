@@ -8,22 +8,14 @@ export const Home = () => {
       value: "",
       err: false,
     },
-    create: {
-      value: "",
-      err: false,
-    },
   });
 
   const onCreateJoin = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!inputsState.create.value.trim() && !inputsState.join.value.trim()) {
+    if (!inputsState.join.value.trim()) {
       return setInputsState((prev) => ({
         ...prev,
-        create: {
-          ...prev.create,
-          err: !inputsState.create.value.trim(),
-        },
         join: {
           ...prev.join,
           err: !inputsState.join.value.trim(),
@@ -31,14 +23,13 @@ export const Home = () => {
       }));
     }
 
-    navigate(`/choose-name`, {
-      state: { room: inputsState.join.value || inputsState.create.value },
-    });
+    sessionStorage.setItem('persistedUser', JSON.stringify({ room: inputsState.join.value }))
+    navigate(`/choose-name`);
   };
 
   return (
     <form onSubmit={onCreateJoin}>
-      Join Room
+      Join/Create Room
       <input
         value={inputsState.join.value}
         onChange={(e) => {
@@ -48,29 +39,8 @@ export const Home = () => {
               ...prev.join,
               value: e.target?.value || "",
             },
-            create: {
-              ...prev.create,
-              value: "",
-            },
           }));
         }}
-      />
-      Create Room
-      <input
-        value={inputsState.create.value}
-        onChange={(e) =>
-          setInputsState((prev) => ({
-            ...prev,
-            create: {
-              ...prev.create,
-              value: e.target?.value || "",
-            },
-            join: {
-              ...prev.join,
-              value: "",
-            },
-          }))
-        }
       />
       <button type="submit">Join/Create</button>
     </form>

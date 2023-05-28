@@ -1,14 +1,9 @@
 import React, { useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-// sessionStorage.setItem(
-//   "persistedUser",
-//   JSON.stringify({ name: inputsState.name.value })
-// );
 export const ChooseName = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const [error, setError] = useState(false);
 
   const onSubmit = (e: React.FormEvent) => {
@@ -18,11 +13,15 @@ export const ChooseName = () => {
       return setError(true);
     }
 
+    const currentPersistedValue: { name: string; room: string } = JSON.parse(
+      sessionStorage.getItem("persistedUser") ?? '{ "name": "", "room": ""}'
+    );
+
     sessionStorage.setItem(
       "persistedUser",
-      JSON.stringify({ name: nameValue })
+      JSON.stringify({ ...currentPersistedValue, name: nameValue })
     );
-    navigate(`../room/${location.state.room}`);
+    navigate(`../room/${currentPersistedValue?.room}`);
   };
 
   return (

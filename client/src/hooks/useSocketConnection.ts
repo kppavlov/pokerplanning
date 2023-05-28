@@ -9,20 +9,31 @@ interface UserProps {
   vote: number | null;
 }
 
-export const useSocketConnection = () => {
+interface HookProps {
+  onReset: () => void;
+}
+
+export const useSocketConnection = ({ onReset }: HookProps) => {
   const { roomId } = useParams();
   const navigate = useNavigate();
   const [usersJoined, setUsersJoined] = useState<UserProps[]>([]);
 
   useEffect(() => {
-    const name = JSON.parse(
-      sessionStorage.getItem("persistedUser") ?? "{}"
-    )?.name;
+    if (socket) {
+      return;
+    }
 
-    if (!name) {
-      navigate("/choose-name", {
-        state: { room: roomId },
-      });
+    const parsedPersistedUser = JSON.parse(
+      sessionStorage.getItem("persistedUser") ?? "{}"
+    );
+
+    if (!parsedPersistedUser.name) {
+      sessionStorage.setItem(
+        "persistedUser",
+        JSON.stringify({ ...parsedPersistedUser, room: roomId })
+      );
+
+      navigate("/choose-name");
       return;
     }
 
@@ -30,8 +41,14 @@ export const useSocketConnection = () => {
       reconnectionDelayMax: 10000,
       query: {
         room: roomId,
-        name,
+        name: parsedPersistedUser.name,
       },
+    });
+
+    socket.on("duplicate-user", ({ error }) => {
+      if (error) {
+        navigate("/choose-name");
+      }
     });
 
     socket.on(
@@ -50,19 +67,26 @@ export const useSocketConnection = () => {
         if (!users) {
           return;
         }
+
         setUsersJoined(users);
+      }
+    );
+
+    socket.on(
+      "vote-reset",
+      (users: { userName: string; id: string; vote: null }[]) => {
+        if (!users) {
+          return;
+        }
+
+        setUsersJoined(users);
+        onReset();
       }
     );
 
     socket.on("connect_error", (err) => {
       console.log(`connect_error due to ${err.message}`);
     });
-
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
   }, [roomId]);
 
   return {

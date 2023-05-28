@@ -1,12 +1,36 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
 }
 
+.App {
+  display: flex;
+  flex: 0 1 auto;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .action-buttons-wrapper {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+  }
+}
+
 input {
   height: 1.75rem;
+  border-radius: 8px;
+  transition: outline 0.25s;
+  outline: none;
+
+  &:focus {
+    outline: #333d51;
+  }
+
+  &:focus-visible {
+    outline: #333d51;
+  }
 }
 
 .input-error {
@@ -25,6 +49,8 @@ form {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
+  height: 100%;
+  justify-content: space-between;
 
   .card {
     width: 5rem;
@@ -33,7 +59,9 @@ form {
     justify-content: center;
     align-items: center;
     border-radius: 3px;
-    border: 1px solid black;
+    border: 1px solid #333d51;
+    background-color: #cbd0d8;
+    font-size: 2.5rem;
 
     &:hover {
       cursor: pointer;
@@ -41,7 +69,7 @@ form {
   }
 
   .card-selected {
-    background-color: aquamarine;
+    background-color: #d3ac2b;
   }
 }
 
@@ -53,21 +81,44 @@ ul {
   text-align: left;
 
   li {
-    width: 10rem;
+    max-width: 10rem;
     text-decoration: none;
     display: flex;
+    flex: 1;
     justify-content: space-between;
   }
 }
 
-.user-list-container {
-  max-width: 50%;
+.user-list-avg-container {
+  display: flex;
+  width: 100%;
+
+  .user-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+  }
+
+  .average-container {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem;
+  }
 }
 
-.average-container {
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
+@media screen and (max-width: 745px) {
+  .user-list-avg-container {
+    display: block;
+
+    .average-container {
+      width: auto;
+    }
+
+    .user-list-container {
+      width: auto;
+    }
+  }
 }

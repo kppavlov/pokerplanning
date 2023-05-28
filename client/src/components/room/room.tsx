@@ -10,15 +10,23 @@ const cardsSet = [
   { number: 5 },
   { number: 8 },
   { number: 13 },
-  { number: 20 },
+  { number: 21 },
   { number: 40 },
   { number: 100 },
 ];
 
 export const Room = () => {
-  const { usersJoined, socket, roomId } = useSocketConnection();
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [shouldReveal, setShouldReveal] = useState(false);
+
+  const handleOnreset = () => {
+    setShouldReveal(false);
+    setSelectedCard(null);
+  };
+
+  const { usersJoined, socket, roomId } = useSocketConnection({
+    onReset: handleOnreset,
+  });
 
   const handleCardClick = (cardId: number) => {
     setSelectedCard(cardId);
@@ -28,8 +36,15 @@ export const Room = () => {
     if (selectedCard === null) {
       return;
     }
-    const userName = JSON.parse(sessionStorage.getItem("persistedUser") ?? '')?.name;
+
+    const userName = JSON.parse(
+      sessionStorage.getItem("persistedUser") ?? ""
+    )?.name;
     socket?.emit("vote-chosen", { roomId, cardId: selectedCard, userName });
+  };
+
+  const handleResetVote = () => {
+    socket?.emit("vote-reset", { roomId });
   };
 
   useEffect(() => {
@@ -53,16 +68,19 @@ export const Room = () => {
         ))}
       </div>
 
-      <button onClick={() => socket?.emit("reveal-result", roomId)}>
-        Show results
-      </button>
-      <button onClick={handleSubmitVote}>Submit vote</button>
+      <div className="action-buttons-wrapper">
+        <button onClick={() => socket?.emit("reveal-result", roomId)}>
+          Show results
+        </button>
 
-      <div
-        style={{
-          display: "flex",
-        }}
-      >
+        <button onClick={handleSubmitVote}>Submit vote</button>
+
+        <button disabled={!shouldReveal} onClick={handleResetVote}>
+          Reset estimation
+        </button>
+      </div>
+
+      <div className="user-list-avg-container">
         <div className="user-list-container">
           <ul>
             <li>User name</li>
@@ -73,7 +91,7 @@ export const Room = () => {
           {usersJoined.map((user) => (
             <ul key={user.userName}>
               <li>{user.userName}</li>
-              <li>{!shouldReveal && user.vote ? "✔" : "???"}</li>
+              <li>{user.vote ? "✔" : "???"}</li>
               <li>
                 {shouldReveal
                   ? user.vote
@@ -85,7 +103,13 @@ export const Room = () => {
           ))}
         </div>
 
-        <div className="average-container">Avg. 50</div>
+        <div className="average-container">
+          Avg.{" "}
+          {shouldReveal &&
+            usersJoined.reduce((acc, curr) => {
+              return acc + (curr?.vote ?? 0);
+            }, 0)}
+        </div>
       </div>
     </>
   );

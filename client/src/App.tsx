@@ -6,13 +6,16 @@ import { ChooseName } from "./components/choose-name/choose-name";
 
 function App() {
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/room/:roomId" element={<Room />} />
-        <Route path="/choose-name" element={<ChooseName />} />
-      </Routes>
-    </div>
+    <>
+      <h1>Welcome</h1>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/room/:roomId" element={<Room />} />
+          <Route path="/choose-name" element={<ChooseName />} />
+        </Routes>
+      </div>
+    </>
   );
 }
 

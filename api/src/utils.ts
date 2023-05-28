@@ -21,8 +21,13 @@ export const joinUserToRoom = ({
       (user) => user.userName === userName
     );
 
+    console.log("hasUserWithSameName");
+    console.log(hasUserWithSameName, userName, socketsInTheRoom);
+    console.log("hasUserWithSameName");
+
     if (hasUserWithSameName) {
-      return false;
+      socket.emit("duplicate-user", { error: "User exists" });
+      return;
     }
 
     roomsMap.set(roomName, [
@@ -77,6 +82,23 @@ export const updateUserVote = ({
     return user;
   });
 
+  roomsMap.set(room, usersWithUpdatedVote);
+
+  return usersWithUpdatedVote;
+};
+
+export const resetUserVote = ({
+  roomsMap,
+  room,
+}: {
+  roomsMap: RoomsType;
+  room: string;
+}) => {
+  const users = roomsMap.get(room);
+  const usersWithUpdatedVote = users.map((user) => {
+    return { ...user, vote: null };
+  });
+  console.log(users, usersWithUpdatedVote);
   roomsMap.set(room, usersWithUpdatedVote);
 
   return usersWithUpdatedVote;

@@ -1,5 +1,10 @@
 import { RoomsType } from "./types";
-import { joinUserToRoom, removeUserFromRoom, updateUserVote } from "./utils";
+import {
+  joinUserToRoom,
+  removeUserFromRoom,
+  resetUserVote,
+  updateUserVote,
+} from "./utils";
 
 const express = require("express");
 const app = express();
@@ -20,7 +25,9 @@ io.on("connection", async (socket) => {
   console.log("someone connected");
   const roomName = socket.handshake.query.room as string;
   const userName = socket.handshake.query.name as string;
-
+  console.log("==================");
+  console.log(roomUsersMap, roomName, userName);
+  console.log("==================");
   joinUserToRoom({ roomsMap: roomUsersMap, roomName, socket, userName });
 
   socket.on("disconnecting", () => {
@@ -37,6 +44,15 @@ io.on("connection", async (socket) => {
     });
 
     io.to(roomId).emit("vote-chosen", users);
+  });
+
+  socket.on("vote-reset", ({ roomId }) => {
+    const users = resetUserVote({
+      roomsMap: roomUsersMap,
+      room: roomId,
+    });
+
+    io.to(roomId).emit("vote-reset", users);
   });
 
   socket.on("reveal-result", (roomId) => {
