@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const ChooseName = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
