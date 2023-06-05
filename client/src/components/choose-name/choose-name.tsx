@@ -1,14 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Socket from "../../socket";
 
 export const ChooseName = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const [error, setError] = useState(false);
+  const socket = Socket.getSocket();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const nameValue = inputRef?.current?.value;
+
     if (!nameValue?.trim()) {
       return setError(true);
     }
@@ -17,12 +20,29 @@ export const ChooseName = () => {
       sessionStorage.getItem("persistedUser") ?? '{ "name": "", "room": ""}'
     );
 
-    sessionStorage.setItem(
-      "persistedUser",
-      JSON.stringify({ ...currentPersistedValue, name: nameValue })
+    socket?.emit(
+      "check-if-name-taken",
+      { roomId: currentPersistedValue?.room, userName: nameValue },
+      (res: { status: "ok" | "not ok" }) => {
+        if (res.status === "ok") {
+          sessionStorage.setItem(
+            "persistedUser",
+            JSON.stringify({ ...currentPersistedValue, name: nameValue })
+          );
+
+          return navigate(`../room/${currentPersistedValue?.room}`);
+        }
+
+        setError(true);
+      }
     );
-    navigate(`../room/${currentPersistedValue?.room}`);
   };
+
+  useEffect(() => {
+    if (socket && !socket.connected) {
+      socket.connect();
+    }
+  }, [socket]);
 
   return (
     <form onSubmit={onSubmit}>

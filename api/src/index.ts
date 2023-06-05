@@ -1,8 +1,11 @@
 import { RoomsType } from "./types";
 import {
+  checkIfNameIsTaken,
+  checkIfRoomExists,
   joinUserToRoom,
   removeUserFromRoom,
   resetUserVote,
+  updateModeratorState,
   updateUserVote,
 } from "./utils";
 
@@ -22,16 +25,36 @@ const io = new Server(server, {
 const roomUsersMap: RoomsType = new Map();
 
 io.on("connection", async (socket) => {
-  console.log("someone connected");
-  const roomName = socket.handshake.query.room as string;
-  const userName = socket.handshake.query.name as string;
-  console.log("==================");
-  console.log(roomUsersMap, roomName, userName);
-  console.log("==================");
-  joinUserToRoom({ roomsMap: roomUsersMap, roomName, socket, userName });
+  socket.on("join-room", ({ roomId, userName }) => {
+    const isNameTaken = checkIfNameIsTaken(roomId, roomUsersMap, userName);
+
+    if (!isNameTaken) {
+      joinUserToRoom({
+        roomsMap: roomUsersMap,
+        roomName: roomId,
+        socket,
+        userName,
+      });
+    }
+  });
+
+  socket.on("check-if-name-taken", ({ roomId, userName }, callback) => {
+    const isNameTaken = checkIfNameIsTaken(roomId, roomUsersMap, userName);
+
+    callback({
+      status: isNameTaken ? "not ok" : "ok",
+    });
+  });
+
+  socket.on("check-if-room-exists", ({ roomId }, callback) => {
+    const doesExist = checkIfRoomExists(roomId, roomUsersMap);
+
+    callback({
+      status: doesExist ? "not ok" : "ok",
+    });
+  });
 
   socket.on("disconnecting", () => {
-    console.log("DIsconnecting");
     removeUserFromRoom({ socket, roomsMap: roomUsersMap });
   });
 
@@ -58,6 +81,18 @@ io.on("connection", async (socket) => {
   socket.on("reveal-result", (roomId) => {
     io.to(roomId).emit("reveal-result");
   });
+
+  socket.on("set-new-moderator", ({ userName, roomId }) => {
+    const updatedUsers = updateModeratorState({
+      userName,
+      roomsMap: roomUsersMap,
+      roomId,
+    });
+
+    if (updatedUsers) {
+      io.to(roomId).emit("users-moderate-updated", updatedUsers);
+    }
+  });
 });
 
 io.of("/").adapter.on("create-room", (room) => {
@@ -65,12 +100,13 @@ io.of("/").adapter.on("create-room", (room) => {
 });
 
 io.of("/").adapter.on("join-room", (room, id) => {
-  console.log("joining room", room, id);
+  console.log("joining room", room, id, roomUsersMap.get(room));
   io.to(room).emit("user-joined", roomUsersMap.get(room));
 });
 
 io.of("/").adapter.on("leave-room", (room, id) => {
   console.log("leave room", room, id);
+  io.to(room).emit("user-leave", roomUsersMap.get(room));
 });
 
 server.listen(3000, () => {

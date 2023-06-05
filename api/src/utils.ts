@@ -8,6 +8,13 @@ import {
 export const checkIfRoomExists = (roomName: string, roomsMap: RoomsType) =>
   roomsMap.has(roomName);
 
+export const checkIfNameIsTaken = (
+  roomName: string,
+  roomsMap: RoomsType,
+  userName: string
+) =>
+  roomsMap.get(roomName)?.some((user) => user.userName === userName) ?? false;
+
 export const joinUserToRoom = ({
   roomsMap,
   roomName,
@@ -21,10 +28,6 @@ export const joinUserToRoom = ({
       (user) => user.userName === userName
     );
 
-    console.log("hasUserWithSameName");
-    console.log(hasUserWithSameName, userName, socketsInTheRoom);
-    console.log("hasUserWithSameName");
-
     if (hasUserWithSameName) {
       socket.emit("duplicate-user", { error: "User exists" });
       return;
@@ -32,14 +35,16 @@ export const joinUserToRoom = ({
 
     roomsMap.set(roomName, [
       ...socketsInTheRoom,
-      { userName, id: socket.id, vote: null },
+      { userName, id: socket.id, vote: null, isModerator: false },
     ]);
 
     socket.join(roomName);
     return true;
   }
 
-  roomsMap.set(roomName, [{ userName, id: socket.id, vote: null }]);
+  roomsMap.set(roomName, [
+    { userName, id: socket.id, vote: null, isModerator: true },
+  ]);
 
   socket.join(roomName);
 };
@@ -49,7 +54,7 @@ export const removeUserFromRoom = ({
   socket,
 }: MainRoomsUtilsProps) => {
   const rooms = socket.rooms.entries();
-  for (const [key, value] of rooms) {
+  for (const [key, _] of rooms) {
     if (!checkIfRoomExists(key, roomsMap)) {
       continue;
     }
@@ -61,6 +66,13 @@ export const removeUserFromRoom = ({
     if (!remainingUsers.length) {
       roomsMap.delete(key);
       return;
+    }
+
+    const didModeratorLeave = !remainingUsers.some((user) => user.isModerator);
+
+    if (didModeratorLeave) {
+      // set the first in the list as moderator if the mod left the est
+      remainingUsers[0].isModerator = true;
     }
 
     roomsMap.set(key, remainingUsers);
@@ -98,8 +110,34 @@ export const resetUserVote = ({
   const usersWithUpdatedVote = users.map((user) => {
     return { ...user, vote: null };
   });
-  console.log(users, usersWithUpdatedVote);
   roomsMap.set(room, usersWithUpdatedVote);
 
   return usersWithUpdatedVote;
+};
+
+export const updateModeratorState = ({
+  roomsMap,
+  roomId,
+  userName,
+}: {
+  userName: string;
+  roomsMap: RoomsType;
+  roomId: string;
+}) => {
+  if (checkIfRoomExists(roomId, roomsMap)) {
+    const roomUsers = roomsMap.get(roomId);
+    const updatedRoomUsers = roomUsers.map((user) => {
+      if (user.isModerator && user.userName !== userName) {
+        return { ...user, isModerator: false };
+      }
+
+      if (user.userName === userName) {
+        return { ...user, isModerator: true };
+      }
+    });
+
+    roomsMap.set(roomId, updatedRoomUsers);
+
+    return updatedRoomUsers;
+  }
 };

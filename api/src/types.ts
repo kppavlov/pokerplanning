@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 
 export type RoomsType = Map<
   string,
-  { userName: string; id: string; vote: number | null }[]
+  { userName: string; id: string; vote: number | null; isModerator: boolean }[]
 >;
 
 export interface MainRoomsUtilsProps {

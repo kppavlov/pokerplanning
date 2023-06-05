@@ -16,6 +16,16 @@
     gap: 1rem;
     padding: 1rem;
   }
+
+  .copy-link-header {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .copy-link-header-clicked {
+    color: limegreen;
+  }
 }
 
 input {
