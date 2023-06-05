@@ -1,7 +1,8 @@
 import { io, Socket as SocketType } from "socket.io-client";
 
-let instance;
+let instance: Socket;
 let socket: SocketType;
+
 class Socket {
   constructor() {
     if (instance) {

@@ -46,7 +46,7 @@ const MakeModeratorButton = ({
 }) => {
   const moderatorUser = getIsUserAModerator(usersJoined);
 
-  return currentUser.userName !== moderatorUser.userName ? (
+  return currentUser.userName !== moderatorUser?.userName ? (
     <button
       style={{
         padding: "0 3px",
@@ -136,7 +136,7 @@ export const Room = () => {
       }
     }
 
-    function handleConnectionError(err) {
+    function handleConnectionError(err: Error) {
       console.error(`connect_error due to ${err.message}`);
     }
 
