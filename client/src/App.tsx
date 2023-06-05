@@ -10,7 +10,7 @@ Socket.createSocket();
 function App() {
   return (
     <>
-      <h1>Welcome to the quick task estimation tool</h1>
+      <h1>Welcome to the quick task estimation tool for scrum teams</h1>
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
