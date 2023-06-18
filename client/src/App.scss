@@ -6,7 +6,6 @@
 
 .App {
   display: flex;
-  flex: 0 1 auto;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -60,6 +59,7 @@ form {
   gap: 1rem;
   flex-wrap: wrap;
   height: 100%;
+  width: 100%;
   justify-content: space-between;
 
   .card {
@@ -120,6 +120,10 @@ ul {
 }
 
 @media screen and (max-width: 745px) {
+  #root {
+    padding: 0.5rem;
+  }
+
   .user-list-avg-container {
     display: block;
 
@@ -130,5 +134,15 @@ ul {
     .user-list-container {
       width: auto;
     }
+  }
+
+  .App {
+    .action-buttons-wrapper {
+      padding: 1rem 0.5rem;
+    }
+  }
+
+  ul {
+    padding: 0.1rem 1rem;
   }
 }
