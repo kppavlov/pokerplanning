@@ -134,6 +134,8 @@ export const updateModeratorState = ({
       if (user.userName === userName) {
         return { ...user, isModerator: true };
       }
+
+      return user;
     });
 
     roomsMap.set(roomId, updatedRoomUsers);
