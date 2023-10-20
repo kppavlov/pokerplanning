@@ -7,7 +7,9 @@ phases:
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
-      - $(aws ecr get-login-password --region eu-north-1 | sudo docker login -u AWS --password-stdin "https://$(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-north-1.amazonaws.com")
+      - DOCKER_PASSWORD=$(aws ecr get-login-password --region eu-north-1)
+      - echo $DOCKER_PASSWORD
+      - $(sudo docker login -u AWS --password $DOCKER_PASSWORD "https://$(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.eu-north-1.amazonaws.com")
       - REPOSITORY_URI=200506703857.dkr.ecr.eu-north-1.amazonaws.com/pokerplanning
       - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
       - API_IMAGE_TAG=api-${COMMIT_HASH:=latest}
