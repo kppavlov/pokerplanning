@@ -279,8 +279,12 @@ export const Room = () => {
                 if (curr.vote === null) {
                   return acc;
                 }
-                return acc + (curr?.vote ?? 0);
-              }, 0) / usersJoined.length
+                return acc + curr?.vote;
+              }, 0) /
+              usersJoined.reduce(
+                (acc, curr) => acc + (curr.vote !== null ? 1 : 0),
+                0
+              )
             ).toFixed(2)}
         </div>
       </div>
