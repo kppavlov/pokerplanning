@@ -13,8 +13,8 @@ COPY . .
 RUN npm install
 RUN npm run build
 
-# Expose port 80 for the application
-EXPOSE 80
+# Expose port 3000 for the application
+EXPOSE 3000
 
 # Define the command to start your Node.js application
 CMD ["node", "./dist/index.js"]

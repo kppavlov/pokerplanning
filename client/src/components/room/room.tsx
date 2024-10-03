@@ -276,6 +276,9 @@ export const Room = () => {
           {shouldReveal &&
             (
               usersJoined.reduce((acc, curr) => {
+                if (curr.vote === null) {
+                  return acc;
+                }
                 return acc + (curr?.vote ?? 0);
               }, 0) / usersJoined.length
             ).toFixed(2)}
