@@ -117,15 +117,15 @@ export const resetUserVote = ({
 
 export const updateModeratorState = ({
   roomsMap,
-  roomId,
+  roomName,
   userName,
 }: {
   userName: string;
   roomsMap: RoomsType;
-  roomId: string;
+  roomName: string;
 }) => {
-  if (checkIfRoomExists(roomId, roomsMap)) {
-    const roomUsers = roomsMap.get(roomId);
+  if (checkIfRoomExists(roomName, roomsMap)) {
+    const roomUsers = roomsMap.get(roomName);
     const updatedRoomUsers = roomUsers.map((user) => {
       if (user.isModerator && user.userName !== userName) {
         return { ...user, isModerator: false };
@@ -138,7 +138,7 @@ export const updateModeratorState = ({
       return user;
     });
 
-    roomsMap.set(roomId, updatedRoomUsers);
+    roomsMap.set(roomName, updatedRoomUsers);
 
     return updatedRoomUsers;
   }

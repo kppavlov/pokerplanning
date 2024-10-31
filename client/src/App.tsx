@@ -1,8 +1,16 @@
 import { Routes, Route } from "react-router-dom";
-import { Home } from "./components/home/home";
-import { Room } from "./components/room/room";
+
+// COMPONENTS
+import { Home } from "./pages/home/home";
+import { Room } from "./pages/room/room";
+import { ChooseName } from "./pages/choose-name/choose-name";
+
+// PROVIDERS
+import { RoomContextProvider } from "./store/room-ctx";
+
+// STYLES
 import "./App.scss";
-import { ChooseName } from "./components/choose-name/choose-name";
+
 import Socket from "./socket";
 
 Socket.createSocket();
@@ -14,8 +22,18 @@ function App() {
       <div className="App">
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/room/:roomId" element={<Room />} />
+
+          <Route
+            path="/room/:roomId"
+            element={
+              <RoomContextProvider>
+                <Room />
+              </RoomContextProvider>
+            }
+          />
+
           <Route path="/choose-name" element={<ChooseName />} />
+
           <Route
             path="*"
             element={

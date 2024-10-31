@@ -1,0 +1,27 @@
+.input-container {
+  input {
+    height: 1.75rem;
+    border-radius: 8px;
+    transition: outline 0.25s;
+    outline: none;
+
+    &:focus {
+      outline: #333d51;
+    }
+
+    &:focus-visible {
+      outline: #333d51;
+    }
+  }
+
+  .input-error {
+    outline: none;
+    color: crimson;
+    border-color: crimson;
+  }
+
+  .input-error-label {
+    color: crimson;
+    font-size: 1rem;
+  }
+}

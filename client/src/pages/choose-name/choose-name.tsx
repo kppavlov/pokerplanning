@@ -1,12 +1,16 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Socket from "../../socket";
+import { useSocketConnect } from "../../hooks/useSocketConnect.ts";
+
+// COMPONENTS
+import { Input } from "../../components/input/input.tsx";
+import { Button } from "../../components/button/button.tsx";
 
 export const ChooseName = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const navigate = useNavigate();
   const [error, setError] = useState(false);
-  const socket = Socket.getSocket();
+  const socket = useSocketConnect();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,21 +42,16 @@ export const ChooseName = () => {
     );
   };
 
-  useEffect(() => {
-    if (socket && !socket.connected) {
-      socket.connect();
-    }
-  }, [socket]);
-
   return (
     <form onSubmit={onSubmit}>
-      Create Name
-      <input
+      Enter your name
+      <Input
         ref={inputRef}
-        className={error ? "input-error" : ""}
+        error={error}
+        errorText="Name already taken"
         onChange={() => setError(false)}
       />
-      <button type="submit">Create</button>
+      <Button type="submit">Join!</Button>
     </form>
   );
 };

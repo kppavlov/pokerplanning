@@ -9,11 +9,11 @@ import {
   updateUserVote,
 } from "./utils";
 
-const express = require("express");
+import express from "express";
 const app = express();
-const http = require("http");
+import http from "http";
 const server = http.createServer(app);
-const { Server } = require("socket.io");
+import { Server } from "socket.io";
 
 const io = new Server(server, {
   cors: {
@@ -82,15 +82,23 @@ io.on("connection", async (socket) => {
     io.to(roomId).emit("reveal-result");
   });
 
+  socket.on("timer-start", ({ roomId, seconds, minutes }) => {
+    io.to(roomId).emit("timer-start", { seconds, minutes });
+  });
+
+  socket.on("timer-stop", (roomId) => {
+    io.to(roomId).emit("timer-stop");
+  });
+
   socket.on("set-new-moderator", ({ userName, roomId }) => {
     const updatedUsers = updateModeratorState({
       userName,
       roomsMap: roomUsersMap,
-      roomId,
+      roomName: roomId,
     });
 
     if (updatedUsers) {
-      io.to(roomId).emit("users-moderate-updated", updatedUsers);
+      io.to(roomId).emit("users-table-moderate-updated", updatedUsers);
     }
   });
 });

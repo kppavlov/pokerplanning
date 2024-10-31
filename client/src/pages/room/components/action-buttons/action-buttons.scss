@@ -1,0 +1,13 @@
+.action-buttons-wrapper {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  align-items: center;
+
+  .buttons-holder {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    align-items: center;
+  }
+}
