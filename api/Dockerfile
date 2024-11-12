@@ -15,6 +15,7 @@ RUN npm run build
 
 # Expose port 3000 for the application
 EXPOSE 3000
+ENV NODE_ENV=production
 
 # Define the command to start your Node.js application
 CMD ["node", "./dist/index.js"]

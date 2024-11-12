@@ -1,13 +1,17 @@
 import { RoomsType } from "./types";
 import {
-  checkIfNameIsTaken,
-  checkIfRoomExists,
-  joinUserToRoom,
   removeUserFromRoom,
   resetUserVote,
   updateModeratorState,
   updateUserVote,
 } from "./utils";
+import { config } from "dotenv";
+
+config({
+  path: process.env.NODE_ENV === "production" ? ".env.production" : ".env",
+});
+
+import { socketListeners } from "./constants";
 
 import express from "express";
 const app = express();
@@ -17,7 +21,7 @@ import { Server } from "socket.io";
 
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173", "https://poker.threesixtybg.com"],
+    origin: [process.env.CORS_DOMAIN],
     methods: ["GET", "POST"],
   },
 });
@@ -25,82 +29,9 @@ const io = new Server(server, {
 const roomUsersMap: RoomsType = new Map();
 
 io.on("connection", async (socket) => {
-  socket.on("join-room", ({ roomId, userName }) => {
-    const isNameTaken = checkIfNameIsTaken(roomId, roomUsersMap, userName);
-
-    if (!isNameTaken) {
-      joinUserToRoom({
-        roomsMap: roomUsersMap,
-        roomName: roomId,
-        socket,
-        userName,
-      });
-    }
-  });
-
-  socket.on("check-if-name-taken", ({ roomId, userName }, callback) => {
-    const isNameTaken = checkIfNameIsTaken(roomId, roomUsersMap, userName);
-
-    callback({
-      status: isNameTaken ? "not ok" : "ok",
-    });
-  });
-
-  socket.on("check-if-room-exists", ({ roomId }, callback) => {
-    const doesExist = checkIfRoomExists(roomId, roomUsersMap);
-
-    callback({
-      status: doesExist ? "not ok" : "ok",
-    });
-  });
-
-  socket.on("disconnecting", () => {
-    removeUserFromRoom({ socket, roomsMap: roomUsersMap });
-  });
-
-  socket.on("vote-chosen", ({ cardId, roomId, userName }) => {
-    const users = updateUserVote({
-      roomsMap: roomUsersMap,
-      room: roomId,
-      userName,
-      vote: cardId,
-    });
-
-    io.to(roomId).emit("vote-chosen", users);
-  });
-
-  socket.on("vote-reset", ({ roomId }) => {
-    const users = resetUserVote({
-      roomsMap: roomUsersMap,
-      room: roomId,
-    });
-
-    io.to(roomId).emit("vote-reset", users);
-  });
-
-  socket.on("reveal-result", (roomId) => {
-    io.to(roomId).emit("reveal-result");
-  });
-
-  socket.on("timer-start", ({ roomId, seconds, minutes }) => {
-    io.to(roomId).emit("timer-start", { seconds, minutes });
-  });
-
-  socket.on("timer-stop", (roomId) => {
-    io.to(roomId).emit("timer-stop");
-  });
-
-  socket.on("set-new-moderator", ({ userName, roomId }) => {
-    const updatedUsers = updateModeratorState({
-      userName,
-      roomsMap: roomUsersMap,
-      roomName: roomId,
-    });
-
-    if (updatedUsers) {
-      io.to(roomId).emit("users-table-moderate-updated", updatedUsers);
-    }
-  });
+  for (const key in socketListeners) {
+    socket.on(key, socketListeners[key](roomUsersMap, socket, io));
+  }
 });
 
 io.of("/").adapter.on("create-room", (room) => {

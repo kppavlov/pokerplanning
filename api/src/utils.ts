@@ -54,6 +54,7 @@ export const removeUserFromRoom = ({
   socket,
 }: MainRoomsUtilsProps) => {
   const rooms = socket.rooms.entries();
+
   for (const [key, _] of rooms) {
     if (!checkIfRoomExists(key, roomsMap)) {
       continue;

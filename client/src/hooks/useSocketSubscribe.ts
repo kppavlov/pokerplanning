@@ -73,6 +73,8 @@ export const useSocketSubscribe = () => {
     function handleTimerStop() {
       setTimer((prevState) => ({
         ...prevState,
+        seconds: 0,
+        minutes: 0,
         isActive: false,
       }));
     }

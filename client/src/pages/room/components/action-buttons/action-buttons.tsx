@@ -56,7 +56,10 @@ export const ActionButtons = () => {
         {isCurrentUserModerator && (
           <Button
             disabled={!isCurrentUserModerator}
-            onClick={() => socket?.emit("reveal-result", roomId)}
+            onClick={() => {
+              socket?.emit("reveal-result", roomId)
+              socket?.emit("timer-stop", roomId)
+            }}
           >
             Show results
           </Button>
