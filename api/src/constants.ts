@@ -7,14 +7,7 @@ import {
   updateModeratorState,
   updateUserVote,
 } from "./utils";
-import { RoomsType } from "./types";
-import { Socket, Server } from "socket.io";
-
-type EventListenerCallback = (
-  roomUsersMap: RoomsType,
-  socket?: Socket,
-  io?: Server
-) => (...args: any[]) => void;
+import { EventListenerCallback } from "./types";
 
 export const socketListeners: Record<string, EventListenerCallback> = {
   "join-room":

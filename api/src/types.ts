@@ -1,4 +1,4 @@
-import { Socket } from "socket.io";
+import {Server, Socket} from "socket.io";
 
 export type RoomsType = Map<
   string,
@@ -21,3 +21,9 @@ export interface JoinUsersToGroupProps extends MainRoomsUtilsProps {
   roomName: string;
   userName: string;
 }
+
+export type EventListenerCallback = (
+    roomUsersMap: RoomsType,
+    socket?: Socket,
+    io?: Server
+) => (...args: any[]) => void;
