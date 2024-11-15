@@ -1,17 +1,11 @@
 {
   "compilerOptions": {
-    "module": "node16",
+    "module": "esnext",
+    "moduleResolution": "node",
     "target": "es2015",
-    "lib": [
-      "decorators",
-      "dom",
-      "es5",
-      "scripthost",
-      "es2015.collection"
-    ],
-    "outDir": "dist"
+    "lib": ["decorators", "dom", "es5", "scripthost", "es2015.collection"],
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

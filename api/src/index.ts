@@ -1,10 +1,4 @@
 import { RoomsType } from "./types";
-import {
-  removeUserFromRoom,
-  resetUserVote,
-  updateModeratorState,
-  updateUserVote,
-} from "./utils";
 import { config } from "dotenv";
 
 config({

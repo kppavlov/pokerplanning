@@ -1,29 +1,16 @@
 import {
   checkIfNameIsTaken,
   checkIfRoomExists,
-  joinUserToRoom,
   removeUserFromRoom,
   resetUserVote,
   updateModeratorState,
   updateUserVote,
 } from "./utils";
 import { EventListenerCallback } from "./types";
+import { joinRoomHandler } from "./socket-listeners-handlers";
 
 export const socketListeners: Record<string, EventListenerCallback> = {
-  "join-room":
-    (roomUsersMap, socket) =>
-    ({ roomId, userName }) => {
-      const isNameTaken = checkIfNameIsTaken(roomId, roomUsersMap, userName);
-
-      if (!isNameTaken) {
-        joinUserToRoom({
-          roomsMap: roomUsersMap,
-          roomName: roomId,
-          socket,
-          userName,
-        });
-      }
-    },
+  "join-room": joinRoomHandler,
   "check-if-name-taken":
     (roomUsersMap) =>
     (
