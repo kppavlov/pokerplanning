@@ -3,7 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type, { Config } from "jest";
+import { Config } from "jest";
 
 const config: Config = {
   // All imported modules in your tests should be mocked automatically
@@ -102,7 +102,7 @@ const config: Config = {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  preset: 'ts-jest',
+  preset: "ts-jest",
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -123,7 +123,7 @@ const config: Config = {
   // restoreMocks: false,
 
   // The root directory that Jest should scan for tests and modules within
-  // rootDir: undefined,
+  // rootDir: "./src",
 
   // A list of paths to directories that Jest should use to search for files in
   // roots: [

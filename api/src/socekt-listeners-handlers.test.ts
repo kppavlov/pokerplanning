@@ -19,8 +19,6 @@ describe("joinRoomHandler", () => {
   } as unknown as Socket;
 
   beforeEach(() => {
-    // Mock dependencies
-
     roomUsersMap = new Map();
   });
 
@@ -51,23 +49,21 @@ describe("joinRoomHandler", () => {
     });
   });
 
-  // it("should not call `joinUserToRoom` if the name is taken", () => {
-  //   const roomId = "test-room";
-  //   const userName = "test-user";
-  //
-  //   // Set up stubs
-  //   checkIfNameIsTakenStub.returns(true);
-  //
-  //   const handler = joinRoomHandler(roomUsersMap, socket);
-  //   handler({ roomId, userName });
-  //
-  //   expect(
-  //     checkIfNameIsTakenStub.calledOnceWithExactly(
-  //       roomId,
-  //       roomUsersMap,
-  //       userName
-  //     )
-  //   ).to.be.true;
-  //   expect(joinUserToRoomStub.called).to.be.false;
-  // });
+  it("should not call `joinUserToRoom` if the name is taken", () => {
+    const roomId = "test-room";
+    const userName = "test-user";
+
+    // Set up stubs
+    checkIfNameIsTakenMock.mockReturnValue(true);
+
+    const handler = joinRoomHandler(roomUsersMap, socket);
+    handler({ roomId, userName });
+
+    expect(checkIfNameIsTakenMock).toHaveBeenCalledWith(
+      roomId,
+      roomUsersMap,
+      userName
+    );
+    expect(joinUserToRoomMock).not.toHaveBeenCalled();
+  });
 });

@@ -66,7 +66,7 @@ export const removeUserFromRoom = ({
 
     if (!remainingUsers.length) {
       roomsMap.delete(key);
-      return;
+      continue;
     }
 
     const didModeratorLeave = !remainingUsers.some((user) => user.isModerator);

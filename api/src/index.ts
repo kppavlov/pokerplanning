@@ -1,4 +1,4 @@
-import { RoomsType } from "./types";
+import { RoomsType } from "./types.js";
 import { config } from "dotenv";
 
 config({

@@ -1,11 +1,19 @@
 {
   "compilerOptions": {
-    "module": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
-    "target": "es2015",
+    "target": "ES2020",
     "lib": ["decorators", "dom", "es5", "scripthost", "es2015.collection"],
     "outDir": "dist",
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true,
+    "rootDir": "./src", // Source folder
+    "skipLibCheck": true, // Skips checking `.d.ts` files
+    "resolveJsonModule": true, // Allow importing JSON files
+    "types": ["node", "jest"], // Include Node.js and Jest types
+    "baseUrl": "./", // Set the base URL for module resolution
+    "paths": {
+      "*": ["node_modules/*"]
+    }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "jest.config.ts", "./src/**/*.test.ts"]
 }
