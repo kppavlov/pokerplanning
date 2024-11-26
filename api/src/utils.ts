@@ -174,7 +174,6 @@ export const newInterval = ({
 
       clearInterval(timersMap.get(roomId));
       timersMap.delete(roomId);
-      console.log(interval, timersMap);
       return;
     }
 

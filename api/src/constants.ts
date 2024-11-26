@@ -58,6 +58,9 @@ export const socketListeners: Record<string, EventListenerCallback> = {
     },
   "reveal-result": (__, _, io) => (roomId) => {
     io.to(roomId).emit("reveal-result");
+    io.to(roomId).emit("timer-stop");
+    clearInterval(timersMap.get(roomId));
+    timersMap.delete(roomId);
   },
   "timer-start":
     (__, _, io) =>

@@ -18,7 +18,7 @@ export const Timer = () => {
   const socket = useSocketConnect();
   const { timer, usersJoined } = values;
   const { seconds, minutes } = timer;
-  const isNotTimerRunning = minutes === 0 && seconds === 0;
+  const isNotTimerRunning = (minutes === 0 && seconds === 0) || timer.isActive;
 
   const isUserModerator = useMemo(
     () => getIsUserAModerator(usersJoined),
@@ -30,6 +30,10 @@ export const Timer = () => {
     if (isNotTimerRunning) {
       return;
     }
+    setTimer((prevState) => ({
+      ...prevState,
+      isActive: true,
+    }));
     socket.emit("timer-start", { roomId, minutes, seconds });
   };
 
