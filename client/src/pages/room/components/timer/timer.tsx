@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 // COMPONENTS
@@ -97,48 +97,6 @@ export const Timer = () => {
       };
     });
   };
-
-  useEffect(() => {
-    let interval: string | number | NodeJS.Timer | null | undefined = null;
-
-    if (timer.isActive) {
-      interval = setInterval(() => {
-        setTimer((prevState) => {
-          if (prevState.seconds === 0) {
-            return {
-              ...prevState,
-              minutes: prevState.minutes === 0 ? 0 : prevState.minutes - 1,
-              seconds: 59,
-            };
-          }
-
-          if (
-            prevState.minutes === 0 &&
-            prevState.seconds - 1 === 0 &&
-            isUserModerator
-          ) {
-            socket.emit("timer-stop", roomId);
-            socket.emit("reveal-result", roomId);
-          }
-
-          return {
-            ...prevState,
-            seconds: prevState.seconds - 1,
-          };
-        });
-      }, 1000);
-    }
-
-    if (!timer.isActive && interval) {
-      clearInterval(interval);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [timer.isActive, isUserModerator]);
 
   return (
     <div>

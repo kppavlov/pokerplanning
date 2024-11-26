@@ -79,6 +79,17 @@ export const useSocketSubscribe = () => {
       }));
     }
 
+    function handleTimerTick({ seconds, minutes }: {
+      seconds: number;
+      minutes: number;
+    }) {
+      setTimer((prevState) => ({
+        ...prevState,
+        seconds,
+        minutes,
+      }));
+    }
+
     socket.on("vote-chosen", handleSimpleUsersSet);
 
     socket.on("vote-reset", handleVoteReset);
@@ -99,6 +110,8 @@ export const useSocketSubscribe = () => {
 
     socket.on("timer-stop", handleTimerStop);
 
+    socket.on("timer-tick", handleTimerTick);
+
     return () => {
       socket.off("vote-chosen", handleSimpleUsersSet);
 
@@ -113,6 +126,8 @@ export const useSocketSubscribe = () => {
       socket.off("duplicate-user", handleDuplicateUser);
 
       socket.off("connect_error", handleConnectionError);
+
+      socket.off("timer-tick", handleTimerTick);
     };
   }, []);
 };

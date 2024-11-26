@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest ./src",
-    "dev": "npm run build && ./dist/index.js",
+    "dev": "npm run build && node ./dist/index.js",
     "build": "tsc --build tsconfig.json"
   },
   "author": "",
