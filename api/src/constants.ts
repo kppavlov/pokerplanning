@@ -68,9 +68,6 @@ export const socketListeners: Record<string, EventListenerCallback> = {
 
       newInterval({ roomId, seconds, minutes, io });
     },
-  "timer-stop": (__, _, io) => (roomId) => {
-    io.to(roomId).emit("timer-stop");
-  },
   "set-new-moderator":
     (roomUsersMap, _, io) =>
     ({ userName, roomId }) => {
