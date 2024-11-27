@@ -66,7 +66,7 @@ export const ActionButtons = () => {
         )}
 
         <Button
-          disabled={!selectedCard || disableSubmitButton}
+          disabled={selectedCard === null || disableSubmitButton}
           onClick={handleSubmitVote}
         >
           Submit vote

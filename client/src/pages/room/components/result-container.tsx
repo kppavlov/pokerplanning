@@ -6,7 +6,7 @@ export const ResultContainer = () => {
 
   return (
     <div className="average-container">
-      {shouldReveal ? <h1>Avg.</h1> : <h1>Voting in progress</h1>}
+      {shouldReveal ? <h1>Avg.</h1> : <h1>No result yet</h1>}
       {shouldReveal &&
         (
           usersJoined.reduce((acc, curr) => {
