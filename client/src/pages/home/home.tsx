@@ -27,6 +27,7 @@ export const Home = () => {
 
   const onCreateJoin = (e: React.FormEvent) => {
     e.preventDefault();
+
     const joinValue = inputsState.join.value.trim();
     const createValue = inputsState.create.value.trim();
 

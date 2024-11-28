@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 // COMPONENTS
 import { Button } from "../../../../components/button/button.tsx";
 import { Input } from "../../../../components/input/input.tsx";
+import EditIcon from "../../../../components/icons/edit.tsx";
 
 // HOOKS
 import { useRoomState } from "../../../../store/room-ctx";
@@ -13,7 +14,6 @@ import { useSocketConnect } from "../../../../hooks/useSocketConnect.ts";
 import { getCorrectTimeValue, getIsUserAModerator } from "../../utils.ts";
 
 import "./timer.scss";
-import EditIcon from "../../../../components/icons/edit.tsx";
 
 export const Timer = () => {
   const { roomId } = useParams();
@@ -111,7 +111,6 @@ export const Timer = () => {
   const handleChangeMinutes = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.currentTarget.value;
 
-    console.log(e.currentTarget.value);
     setTimer((prevValue) => ({
       ...prevValue,
       minutes: getCorrectTimeValue(val),
@@ -120,6 +119,7 @@ export const Timer = () => {
 
   const handleChangeSeconds = (e: ChangeEvent<HTMLInputElement>) => {
     const val = e.currentTarget.value;
+
     setTimer((prevValue) => ({
       ...prevValue,
       seconds: getCorrectTimeValue(val),
@@ -133,7 +133,9 @@ export const Timer = () => {
   return (
     <>
       <div tabIndex={0} className="timer-container">
-        <EditIcon onClick={handleToggleInputs} width={25} height={25} />
+        {isUserModerator && !timer.isActive && (
+          <EditIcon onClick={handleToggleInputs} width={25} height={25} />
+        )}
         <div>
           {shouldAllowIncreaseDecrease && (
             <p onClick={handleIncreaseMinutes}>Increase</p>
